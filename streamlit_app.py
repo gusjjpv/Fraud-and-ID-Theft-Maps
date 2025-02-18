@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+
 APP_TITLE = "Relatório de Fraude e Roubo de Identidade"
 APP_SUB_TITLE = "Fonte: Comissão Federal de Comércio"
 
@@ -14,8 +15,16 @@ def main():
     year = 2022
     quarter = 1
     state_name = "Texas"
+    report_type = "Other"
+    field_name = 'State Fraud/Other Count'
+    metric_title = f'# of {report_type} Reports'
     
-    df = df[(df['Year'] == year) & (df['Quarter'] == quarter) & (df["State Name"] == state_name)]
+    df = df[(df['Year'] == year) & (df['Quarter'] == quarter) & (df['Report Type'] == report_type)]
+    if state_name:
+        df = df[df['State Name'] == state_name]
+    df.drop_duplicates(inplace=True)
+    total = df[field_name].sum()
+    st.metric(metric_title, '{:,}'.format(total))
     
     st.write(df.shape)
     st.write(df.head())
